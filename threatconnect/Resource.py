@@ -8,6 +8,7 @@ from BatchJobObject import BatchJobObject
 from GroupObject import GroupObject
 from TaskObject import TaskObject
 from VictimObject import VictimObject
+import IndicatorObjectParser
 
 from Config.ResourceType import ResourceType
 from Config.FilterOperator import FilterOperator
@@ -447,6 +448,11 @@ class Resource(object):
                 for data_obj in self._tag_idx[data]:
                     data_obj.add_matched_filter(description)
                     yield data_obj
+        if operator == FilterOperator.NE:
+            not_tagged_with = list(set(self._master_objects).difference(self._tag_idx[data]))
+            for data_obj in not_tagged_with:
+                data_obj.add_matched_filter(description)
+                yield data_obj
         else:
             for key, data_obj_list in self._tag_idx.items():
                 if operator.value(key, data):
