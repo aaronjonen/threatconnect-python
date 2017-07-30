@@ -292,10 +292,19 @@ class Resource(object):
             # tags (nested object)
             #
             if hasattr(data_obj, 'tags'):
-                if len(data_obj.tags) > 0:
-                    for tag_obj in data_obj.tags:
-                        self._tag_idx.setdefault(
-                            tag_obj.name, []).append(data_obj)
+                if data_obj.resource_type==ResourceType.FILES:
+                    advancedcreator=IndicatorObjectParser.IndicatorObjectParser(self.tc)
+                    advanced_obj=advancedcreator.construct_typed_advanced_indicator(self,data_obj)
+                    advanced_obj.load_tags()
+                    if len(advanced_obj.tags) > 0:
+                        for tag_obj in advanced_obj.tags:
+                            self._tag_idx.setdefault(
+                                tag_obj.name, []).append(data_obj) #tag with original's address.
+                else:
+                    if len(data_obj.tags) > 0:
+                        for tag_obj in data_obj.tags:
+                            self._tag_idx.setdefault(
+                                tag_obj.name, []).append(data_obj)
 
         return resource_object_id
 
